@@ -445,6 +445,19 @@ void cancelAppointment() {
     }
 }
 
+//Amalina
+// Delete appointment (physically remove from array)
+void deleteAppointment() {
+    cout << "Enter appointment ID to delete permanently: ";
+    int id; if (!(cin >> id)) { cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); cout << "Invalid input.\n"; return; }
+    int idx = findByID(id);
+    if (idx == -1) { cout << "Not found.\n"; return; }
+    // shift left
+    for (int i = idx; i < apptCount - 1; ++i) appts[i] = appts[i + 1];
+    --apptCount;
+    cout << "Appointment deleted.\n";
+}
+
 //Nuhaa
 // Simple menu
 void showMenu() {
@@ -460,4 +473,42 @@ void showMenu() {
     cout << "9. List only active appointments\n";
     cout << "0. Exit\n";
     cout << "Select option: ";
+}
+
+//Amalina
+int main() {
+    loadFromFile();
+    int choice;
+    do {
+        showMenu();
+        if (!(cin >> choice)) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Invalid option. Try again.\n";
+            continue;
+        }
+        switch (choice) {
+        case 1: addAppointment(); break;
+        case 2: listAppointments(true); break;
+        case 3: {
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Enter name to search: ";
+            string q; getline(cin, q);
+            searchByName(q);
+            break;
+        }
+        case 4: editAppointment(); break;
+        case 5: cancelAppointment(); break;
+        case 6: deleteAppointment(); break;
+        case 7: saveToFile(); break;
+        case 8: loadFromFile(); break;
+        case 9: listAppointments(false); break;
+        case 0: cout << "Exiting. Goodbye.\n"; break;
+        default: cout << "Unknown option.\n"; break;
+        }
+    } while (choice != 0);
+
+    // optional: auto-save on exit
+    saveToFile();
+    return 0;
 }
